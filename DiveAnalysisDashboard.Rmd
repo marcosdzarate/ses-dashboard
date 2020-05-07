@@ -1,0 +1,284 @@
+---
+title: "SES Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    theme: default
+    social: [ "twitter", "facebook", "menu"]
+    #source_code: embed
+    logo: icon/logoCESIMAR.png
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(knitr)
+library(stringr)
+library(DT)
+library(rpivotTable)
+library(ggplot2)
+library(plotly)
+library(plyr)
+library(dplyr)
+library(highcharter)
+library(ggvis)
+library(leaflet)
+library(dbscan)
+library(factoextra)
+library(shiny)
+```
+
+
+```{r}
+data <- read.csv("ALLplatform.csv")
+dataInstr <- read.csv("Instruments.csv")
+datacensus <- read.csv("censusByCategories.csv")
+```
+
+
+
+Dive Statistics
+=====================================
+
+Row
+-------------------------------------
+
+### Platform Analysis
+
+```{r}
+valueBox(paste("SES"),
+         color = "warning",
+         icon ="ion-stats-bars")
+```
+
+### Number of Platforms
+
+```{r}
+p1 <- data %>%
+         group_by(claveU) %>%
+         dplyr::summarise(count = n())
+
+valueBox(length(p1$claveU),
+         icon = "ion-ios-speedometer-outline" )
+
+```
+
+### Number of Dives
+
+```{r}
+valueBox(length(data$dive),
+         icon = "ion-shuffle" )
+```
+
+### Max. Depth Recorded (m)
+
+```{r}
+valueBox(max(data$MaxDepth),
+         icon = "ion-arrow-graph-up-right" )
+```
+
+### Min. Depth Recorded (m)
+
+```{r}
+valueBox(min(data$MinDepth),
+         icon = "ion-arrow-graph-down-right" )
+```
+
+### Avg. Depth Recorded (m)
+
+```{r}
+valueBox(round(mean(data$AvgDepth), digits = 2),
+         icon = "ion-arrow-swap")
+```
+
+Row 
+-------------------------------
+
+### Sensors and Platforms
+
+```{r}
+
+renderDataTable({
+datatable(dataInstr,
+          rownames = T,
+          filter = "top",
+          options = list(pageLength = 10),list(scrollX = TRUE))%>% 
+          DT::formatStyle(columns = colnames(dataInstr), fontSize = '80%')
+
+})
+```
+
+### Number of Dives By platform
+
+```{r}
+p2 <- data %>%
+         group_by(claveU) %>%
+         dplyr::summarise(count = n())
+
+renderPlotly({
+         plot_ly(x = ~p2$claveU,
+                 y = ~p2$count,
+                 color = "blue",
+                 type = 'bar') %>%
+        layout(xaxis = list(title = "Platform"),
+        yaxis = list(title = 'Dives'))
+})
+```
+
+Dive Analysis
+========================================
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+selectInput(inputId = "PlatformID", label = h3("Select Platform"),
+                  choices = unique(data$claveU),
+                  selected = "AMVI")
+
+num <- reactive(input$PlatformID)
+
+```
+
+Row
+-------------------------------
+### Dive analysis (dives, dephts and temperatures)
+
+```{r}
+
+renderPlotly({
+  
+fields <- data  %>% select(dive,MaxDepth,AvgDepth,MinDepth,duration,BottomTemp,SurfaceTemp)  %>%
+ filter(str_detect(data$claveU, num()))
+
+
+vars <- setdiff(names(fields), "dive")
+
+
+plots <- lapply(vars, function(var) {
+  plot_ly(fields, x = ~dive, y = as.formula(paste0("~", var))) %>%
+    add_lines(name = var) 
+})
+subplot(plots, nrows = length(plots), shareX = TRUE, titleX = TRUE) 
+  
+})
+```
+
+Platform Trips
+========================================
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+selectInput(inputId = "PlatformTrip", label = h3("Select Platform"),
+                  choices = unique(data$claveU),
+                  selected = "ANIF")
+
+platform <- reactive(input$PlatformTrip)
+
+```
+
+Row
+-------------------------------
+### Trips made by all platforms
+
+```{r}
+renderLeaflet({
+  
+  trips <- data  %>% select(lati,longi,MaxDepth,duration,BottomTemp,SurfaceTemp)  %>%
+          filter(str_detect(data$claveU, platform()))
+  
+  map <- leaflet(trips) %>% addTiles(group = "OpenStreetMap")
+  map = map %>% addCircleMarkers(~longi, ~lati, radius = 1, 
+       popup = paste("<b>Max Depht</b> (meters): ", trips$MaxDepth,
+                                 "<b>Dive Duration</b> (seconds): ",trips$duration, 
+                                 "<b>Bottom temperature</b> (°C): ",trips$BottomTemp,
+                                 "<b>Surface temperature</b> (°C): ",trips$SurfaceTemp,
+                                 sep = "<br/>"),
+        weight = 2, opacity = 0.5, fill = TRUE, fillOpacity = 0.2, color = "red") %>%
+  addPolylines(data=trips, lng = ~longi, lat = ~lati, stroke = TRUE, color = "green", weight = 2)%>% 
+  addTiles() %>% 
+  addProviderTiles(providers$Esri.NatGeoWorldMap)%>%
+  addMeasure()%>%
+  addMeasure(  position = "bottomleft",  primaryLengthUnit = "kilometers",  primaryAreaUnit = "sqkilometers",  activeColor = "#3D535D",  completedColor = "#7D4479",  localization = "en")
+  
+})
+```
+
+
+Cluster Analysis
+========================================
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+Two important parameters are required for DBSCAN:
+
+- epsilon (“eps”): The parameter eps defines the radius of neighborhood around a point x. 
+
+- MinPts: Is the minimum number of neighbors within “eps” radius.
+
+```{r}
+selectInput("n_points", label = "MinPts:",
+            choices = c(5, 10, 12, 15, 20), selected = 12)
+points <- reactive(input$n_points)
+
+sliderInput("eps_adjust", label = "eps:",
+            min = 0.01, max = 0.20, value = 0.15, step = 0.02)
+epsvalue <- reactive(input$eps_adjust)
+
+
+```
+
+row
+-------------------------------------
+
+### Cluster analysis using dbscan
+
+```{r}
+renderPlot({
+  
+  locs <- dplyr::select(data,lati,longi)
+  # scalling the data points.
+  locs.scaled = scale(locs,center = T,scale = T)
+  db = dbscan::dbscan(locs.scaled,eps=epsvalue(),minPts = as.numeric(points()))
+
+  factoextra::fviz_cluster(db,locs.scaled,stand = F,ellipse = T,geom = "point")
+})
+```
+
+Census Statistics
+========================================
+
+row
+-------------------------------------
+    
+### Census by year and SES category
+
+```{r}
+renderPlotly({
+plot_ly(datacensus, x=~datacensus$anio, y=~datacensus$total, color=~datacensus$categoria, type="bar") %>% layout(barmode = "stack", title = "Census by year and SES category",
+         xaxis = list(title = "Years"),
+         yaxis = list(title = "Amount"))
+})
+```
+
+row
+-------------------------------------
+    
+### Breeding population trend
+
+```{r}
+p3 <- datacensus %>%
+        filter(datacensus$categoria == "CRIA") #%>%
+         #summarise(total = sum(total))
+renderPlotly({
+plot_ly(p3, x=~p3$anio)%>% 
+  add_trace(y = ~p3$total, name = 'Breeding trend', mode = 'lines+markers')  %>% 
+  layout(mode = 'lines+markers', title = "Breeding population trend",
+         xaxis = list(title = "Years"),
+         yaxis = list(title = "Amount"))
+
+})
+```
