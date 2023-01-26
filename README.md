@@ -1,2 +1,0 @@
-# ses-dashboard
-web app 
