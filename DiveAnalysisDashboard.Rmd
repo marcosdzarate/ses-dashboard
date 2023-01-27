@@ -311,8 +311,7 @@ About
 ========================================
 <font size="5">SES Dashboard: A linked data platform to manage data on Southern Elephant Seals</font> 
 
-
-a linked data platform developed to manage information of Southern Elephant Seals ({\em Mirounga leonina}, Linnaeus 1758) from Península Valdés colony (Patagonia, Argentina), collected over more than two decades of research.
+linked data platform developed to manage information of Southern Elephant Seals ({\em Mirounga leonina}, Linnaeus 1758) from Península Valdés colony (Patagonia, Argentina), collected over more than two decades of research.
 
 This application is a proof of concept for the use of Linked Open Data from the Biodiversity domain. This application uses data extracted from [GBIF](https://www.gbif.org/es/) and later converted to Resource Description Framework [RDF](https://www.w3.org/RDF/) as described in _BiGe-Onto: An ontology-based system for managing biodiversity and biogeography data_ [DOI:10.3233/AO-200228](https://doi.org/10.3233/AO-200228)
 
