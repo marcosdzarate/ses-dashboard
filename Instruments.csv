@@ -1,0 +1,10 @@
+ClaveU,uri,placementDate,recoveryDate,type,ID,sensorURI,maker,model
+ABVM,https://linkeddata.cenpat-conicet.gob.ar/resource/platform/ABVM,1995-10-31,1996-02-10,TDR,197/93,https://linkeddata.cenpat-conicet.gob.ar/resource/sensor/TDR/id-19793,Wildlife Computers,MK3e
+ANIC,https://linkeddata.cenpat-conicet.gob.ar/resource/platform/ANIC,2008-01-16,2008-11-22,SATELITAL,78688,https://linkeddata.cenpat-conicet.gob.ar/resource/sensor/SATELITAL/id-78688,Wildlife Computers,SPLASH
+ANID,https://linkeddata.cenpat-conicet.gob.ar/resource/platform/ANID,2008-01-17,2008-09-20,SATELITAL,78685,https://linkeddata.cenpat-conicet.gob.ar/resource/sensor/SATELITAL/id-78685,Wildlife Computers,SPLASH
+ANIF,https://linkeddata.cenpat-conicet.gob.ar/resource/platform/ANIF,2008-01-16,2008-09-19,SATELITAL,78686,https://linkeddata.cenpat-conicet.gob.ar/resource/sensor/SATELITAL/id-78686,Wildlife Computers,SPLASH
+ALKU,https://linkeddata.cenpat-conicet.gob.ar/resource/platform/ALKU,2004-07-12,2004-11-05,TDR-ANG,118,https://linkeddata.cenpat-conicet.gob.ar/resource/sensor/TDR-ANG/id-118,Dignani Jorge,TDR-ANG
+ALKW,https://linkeddata.cenpat-conicet.gob.ar/resource/platform/ALKM,2004-07-13,2004-11-06,TDR-ANG,122,https://linkeddata.cenpat-conicet.gob.ar/resource/sensor/TDR-ANG/id-122,Dignani Jorge,TDR-ANG
+ALXZ,https://linkeddata.cenpat-conicet.gob.ar/resource/platform/ALKZ,2005-07-30,2005-11-10,TDR,209sda,https://linkeddata.cenpat-conicet.gob.ar/resource/sensor/TDR/id-209sda,Dignani Jorge,NULL
+ALYA,https://linkeddata.cenpat-conicet.gob.ar/resource/platform/ALYA,2005-07-30,2005-11-12,TDR,20210,https://linkeddata.cenpat-conicet.gob.ar/resource/sensor/TDR/id-20210,Dignani Jorge,NULL
+AMVI,https://linkeddata.cenpat-conicet.gob.ar/resource/platform/AMVI,2006-12-28,2007-06-28,TDR,ALUAR4,https://linkeddata.cenpat-conicet.gob.ar/resource/sensor/TDR/id-ALUAR4,Dignani Jorge,NULL
