@@ -203,9 +203,6 @@ Row
   trips <- data  %>% select(lati,longi,MaxDepth,duration,BottomTemp,SurfaceTemp)  %>%
           filter(str_detect(data$claveU, platform()))
   
-  eezboundaries_shp <- mr_shp(key = "MarineRegions:eez", maxFeatures = 1)
-  
-  
   map <- leaflet(trips) %>% addTiles(group = "OpenStreetMap")
   map = map %>% addCircleMarkers(~longi, ~lati, radius = 1, 
        popup = paste("<b>Max Depht</b> (meters): ", trips$MaxDepth,
@@ -216,7 +213,6 @@ Row
         weight = 2, opacity = 0.5, fill = TRUE, fillOpacity = 0.2, color = "red") %>%
   addPolylines(data=trips, lng = ~longi, lat = ~lati, stroke = TRUE, color = "green", weight = 2)%>% 
   addTiles() %>% 
-  addPolygons(data = eezboundaries_shp)  %>% 
   addProviderTiles(providers$Esri.NatGeoWorldMap)%>%
   addMeasure()%>%
   addMeasure(  position = "bottomleft",  primaryLengthUnit = "kilometers",  primaryAreaUnit = "sqkilometers",  activeColor = "#3D535D",  completedColor = "#7D4479",  localization = "en")
@@ -311,13 +307,9 @@ About
 ========================================
 <font size="5">SES Dashboard: A linked data platform to manage data on Southern Elephant Seals</font> 
 
-linked data platform developed to manage information of Southern Elephant Seals ({\em Mirounga leonina}, Linnaeus 1758) from Península Valdés colony (Patagonia, Argentina), collected over more than two decades of research.
+SES Dashboard is a linked data platform developed to manage information of Southern Elephant Seals (Mirounga leonina, Linnaeus 1758) from Península Valdés colony (Patagonia, Argentina), collected over more than two decades of research.
 
-This application is a proof of concept for the use of Linked Open Data from the Biodiversity domain. This application uses data extracted from [GBIF](https://www.gbif.org/es/) and later converted to Resource Description Framework [RDF](https://www.w3.org/RDF/) as described in _BiGe-Onto: An ontology-based system for managing biodiversity and biogeography data_ [DOI:10.3233/AO-200228](https://doi.org/10.3233/AO-200228)
-
-This application allows you to explore the BiGe-Onto dataset and make [federated queries](https://www.w3.org/TR/sparql11-federated-query/) to [Wikidata endpoint](https://query.wikidata.org/) to complement the information on the species. The [NCBI Taxonomy endpoint](https://bio2rdf.org/sparql) and [OpenCitation corpus](https://opencitations.net/sparql) were also used for bibliographic references.
-
-The marine regions are obtained from [Marineregion.org](https://www.marineregions.org/) and the environmental layers were extracted from [Bio-ORACLE: Marine data layers for ecological modeling](https://www.bio-oracle.org/).
+This platform provides support for decision-making related to the conservation of the species inhabiting the Southwestern Atlantic Ocean. Also, the version 2021 published following [Linked Open Data (LOD) principles](https://www.w3.org/wiki/LinkedData), which allows to increase the intended audience by reusing of data, so the range of possibilities is broadened.
 
 <font size="5">Packages used</font> 
 
@@ -325,4 +317,4 @@ The application is built with the [Shiny](http://shiny.rstudio.com) framework fo
 
 <font size="5">Availability for use and reuse</font> 
 
-Code for the application is available at _Soure Code_ menu. I welcome feedback and suggestions! for contact information or [connect with me on Twitter](https://twitter.com/MarcosdZarate84).  
+Code for the application is available [here](https://github.com/marcosdzarate/ses-dashboard). I welcome feedback and suggestions! for contact information or [connect with me on Twitter](https://twitter.com/MarcosdZarate84).  
