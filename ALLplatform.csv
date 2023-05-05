@@ -1,4 +1,4 @@
-claveU,ID,nroViaje,dive,julianoIni,duration,MaxDepth,julianoMax,AvgDepth,MinDepth,BottomTemp,SurfaceTemp,intervaloEnSuperficie,donde,longi,lati,actuBuceo
+claveU,ID,trip,dive,julianDateMin,duration,maxDepth,julianDateMax,avgDepth,minDepth,bottomTemp,surfaceTemp,surfaceInterval,location,longi,lati,actuBuceo
 ABVM,37201,1,60,309.659300,10.94,48.00,309.661700,35.32,9.00,8.3,10.6,2.45,Pi,-63.359000,-43.724000,x
 ABVM,37681,1,540,316.934600,22.03,444.00,316.938100,348.00,10.00,4.0,6.7,4.03,F,-57.394000,-47.466000,x
 ABVM,38033,1,892,323.252300,23.04,444.00,323.254800,363.66,6.00,3.8,6.9,3.02,F,-60.875000,-48.006000,x
