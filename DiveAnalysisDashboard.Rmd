@@ -77,21 +77,21 @@ valueBox(length(data$dive),
 ### Max. Depth Recorded (m)
 
 ```{r}
-valueBox(max(data$MaxDepth),
+valueBox(max(data$maxDepth),
          icon = "ion-arrow-graph-up-right" )
 ```
 
 ### Min. Depth Recorded (m)
 
 ```{r}
-valueBox(min(data$MinDepth),
+valueBox(min(data$minDepth),
          icon = "ion-arrow-graph-down-right" )
 ```
 
 ### Avg. Depth Recorded (m)
 
 ```{r}
-valueBox(round(mean(data$AvgDepth), digits = 2),
+valueBox(round(mean(data$avgDepth), digits = 2),
          icon = "ion-arrow-swap")
 ```
 
@@ -103,10 +103,10 @@ Row
 ```{r}
 renderDataTable({
   
-  data <- data.frame(paste0("<a href='",dataInstr$uri,"'>",dataInstr$ClaveU,"</a>"),dataInstr$placementDate,
+  data <- data.frame(paste0("<a href='",dataInstr$uri,"'>",dataInstr$ClaveU,"</a>"),dataInstr$sex,dataInstr$placementDate,
                       dataInstr$recoveryDate,dataInstr$type,paste0("<a href='",dataInstr$sensorURI,"'>",dataInstr$ID,"</a>"),dataInstr$maker,dataInstr$model)
   
-  colnames(data) = c('Platform','Placement Data','Recovery Date','Type','Sensor ID','Manufactured by','Model')
+  colnames(data) = c('Platform','Sex','Placement Data','Recovery Date','Type','Sensor ID','Manufactured by','Model')
   
   datatable(data, 
             options = list(scrollX = TRUE,pageLength = 10),
@@ -162,7 +162,7 @@ Row
 
 renderPlotly({
   
-fields <- data  %>% select(dive,MaxDepth,AvgDepth,MinDepth,duration,BottomTemp,SurfaceTemp)  %>%
+fields <- data  %>% select(dive,maxDepth,avgDepth,minDepth,duration,bottomTemp,surfaceTemp)  %>%
  filter(str_detect(data$claveU, num()))
 
 
@@ -200,15 +200,15 @@ Row
 ```{r}
  renderLeaflet({
   
-  trips <- data  %>% select(lati,longi,MaxDepth,duration,BottomTemp,SurfaceTemp)  %>%
-          filter(str_detect(data$claveU, platform()))
+  trips <- data  %>% select(lati,longi,maxDepth,duration,bottomTemp,surfaceTemp,trip)  %>%
+          filter(str_detect(data$claveU, platform()) & trip==1)
   
   map <- leaflet(trips) %>% addTiles(group = "OpenStreetMap")
   map = map %>% addCircleMarkers(~longi, ~lati, radius = 1, 
-       popup = paste("<b>Max Depht</b> (meters): ", trips$MaxDepth,
+       popup = paste("<b>Max Depht</b> (meters): ", trips$maxDepth,
                                  "<b>Dive Duration</b> (seconds): ",trips$duration, 
-                                 "<b>Bottom temperature</b> (°C): ",trips$BottomTemp,
-                                 "<b>Surface temperature</b> (°C): ",trips$SurfaceTemp,
+                                 "<b>Bottom temperature</b> (°C): ",trips$bottomTemp,
+                                 "<b>Surface temperature</b> (°C): ",trips$surfaceTemp,
                                  sep = "<br/>"),
         weight = 2, opacity = 0.5, fill = TRUE, fillOpacity = 0.2, color = "red") %>%
   addPolylines(data=trips, lng = ~longi, lat = ~lati, stroke = TRUE, color = "green", weight = 2)%>% 
@@ -271,9 +271,9 @@ column
 
 ```{r}
 renderPlotly({
-plot_ly(datacensus, x=~datacensus$anio, y=~datacensus$total, color=~datacensus$categoria, type="bar") %>% layout(barmode = "stack", title = "Census by year and SES category",
+plot_ly(datacensus, x=~datacensus$year, y=~datacensus$total, color=~datacensus$category, type="bar") %>% layout(barmode = "stack", title = "Census by year and SES category",
          xaxis = list(title = "Years"),
-         yaxis = list(title = "Amount"))
+         yaxis = list(title = "Counted"))
 })
 ```
 
